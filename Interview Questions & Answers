@@ -1,0 +1,279 @@
+1. What is the purpose of EDA?
+EDA (Exploratory Data Analysis) is basically the first step when you get any dataset. It's like getting to know your data before you start building models.
+The main purposes are:
+
+Understanding what you have: See how big the dataset is, what columns are there, what types of data
+Finding patterns: Look for trends and relationships in the data
+Spotting problems: Find missing values, outliers, errors, or weird stuff
+Checking quality: Make sure the data is clean and usable
+Getting ideas: Form hypotheses about what might be important
+Preparing for modeling: Figure out which features matter and what transformations you might need
+
+For example, in the Titanic dataset, EDA showed me that gender and passenger class were super important for survival, Age had lots of missing values, and Fare had some extreme outliers.
+
+2. How do boxplots help in understanding a dataset?
+Boxplots are really useful for quickly seeing the distribution of numerical data.
+Here's what a boxplot shows:
+
+The box: Contains the middle 50% of your data
+Line in the box: That's the median
+Whiskers: Extend to show the range of normal data
+Dots outside: Those are outliers
+
+Why they're helpful:
+
+You can spot outliers immediately
+See if data is skewed (median off-center)
+Compare multiple groups side by side
+Understand the spread of your data
+
+In the Titanic dataset, the Fare boxplot showed me that most people paid under $50, but there were some outliers who paid $500+. This told me there were luxury tickets that might skew my analysis.
+
+3. What is correlation and why is it useful?
+Correlation measures how two numerical variables are related to each other.
+It gives you a number between -1 and +1:
+
++1: Perfect positive relationship (both go up together)
+0: No relationship
+-1: Perfect negative relationship (one goes up, other goes down)
+
+Generally:
+
+0.0 to 0.2: Very weak
+0.2 to 0.4: Weak
+0.4 to 0.6: Moderate
+0.6 to 0.8: Strong
+0.8 to 1.0: Very strong
+
+Why it matters:
+
+Helps you pick important features
+Find features that are too similar (multicollinearity)
+Understand relationships between variables
+Guide your feature engineering
+
+Important: Correlation doesn't mean causation! Just because two things are correlated doesn't mean one causes the other.
+In my Titanic analysis, I found that Pclass and Survived had -0.34 correlation, meaning higher class number (3rd class) = lower survival. And Fare had +0.26 with Survived, so higher fare = better survival chance.
+
+4. How do you detect skewness in data?
+Answer:
+Skewness measures the asymmetry of a distribution. There are several methods to detect it:
+1. Visual Methods:
+
+Histograms: See if the tail extends more to one side
+Box plots: Check if median line is off-center in the box
+Q-Q plots: Compare distribution to normal distribution
+
+2. Statistical Measure:
+Skewness coefficient formula:
+Skewness = (Mean - Median) / Standard Deviation
+Or using the third moment:
+Skewness = E[(X - μ)³] / σ³
+Interpretation:
+
+Skewness = 0: Perfectly symmetrical
+-0.5 to 0.5: Fairly symmetrical
+0.5 to 1 or -1 to -0.5: Moderately skewed
+> 1 or < -1: Highly skewed
+
+Types:
+
+Positive (Right) Skew: Tail extends to the right (Mean > Median)
+Negative (Left) Skew: Tail extends to the left (Mean < Median)
+
+3. Rule of Thumb:
+Compare Mean and Median:
+
+Mean > Median → Right skewed
+Mean < Median → Left skewed
+Mean ≈ Median → Symmetrical
+
+Example from Titanic:
+
+Age: Skewness = 0.39 (slightly right-skewed)
+Fare: Skewness = 4.79 (highly right-skewed - few very expensive tickets)
+
+Why It Matters: Skewed data can affect models like linear regression. Solutions include log transformation, square root transformation, or using algorithms robust to skewness.
+
+5. What is multicollinearity?
+Answer:
+Multicollinearity occurs when two or more independent variables in a regression model are highly correlated with each other.
+Why It's a Problem:
+
+Unstable Coefficients: Small changes in data cause large changes in model coefficients
+Difficult Interpretation: Hard to determine individual effect of each feature
+Inflated Standard Errors: Reduced statistical significance of predictors
+Overfitting Risk: Model fits noise rather than signal
+Model Reliability: Predictions become unreliable
+
+Detection Methods:
+1. Correlation Matrix:
+
+Check pairwise correlations
+Threshold: |r| > 0.7 or 0.8 indicates potential multicollinearity
+
+2. Variance Inflation Factor (VIF):
+pythonVIF = 1 / (1 - R²)
+
+VIF < 5: Low multicollinearity
+VIF 5-10: Moderate multicollinearity
+VIF > 10: High multicollinearity (problematic)
+
+3. Condition Index:
+
+Values > 30 suggest multicollinearity
+
+Solutions:
+
+Remove one of the correlated variables
+Combine correlated variables (e.g., PCA)
+Use regularization (Ridge or Lasso regression)
+Collect more data to reduce correlation
+Use algorithms that handle it well (tree-based models)
+
+Example from Titanic:
+
+Pclass and Fare have correlation of -0.55 (moderate)
+SibSp and Parch could be combined into "FamilySize" feature
+This reduces multicollinearity and improves model performance
+
+
+6. What tools do you use for EDA?
+Answer:
+Python Libraries (Most Common):
+1. Data Manipulation:
+
+Pandas: DataFrame operations, data cleaning, aggregations
+NumPy: Numerical computations, array operations
+
+2. Visualization:
+
+Matplotlib: Basic plotting, customizable graphs
+Seaborn: Statistical visualizations, attractive default styles
+Plotly: Interactive plots, dashboards
+Bokeh: Interactive web-based visualizations
+
+3. Statistical Analysis:
+
+SciPy: Statistical tests, distributions
+Statsmodels: Statistical modeling, hypothesis testing
+
+4. Advanced Tools:
+
+Pandas Profiling: Automated EDA reports
+Sweetviz: Comparative EDA visualizations
+Dtale: Interactive web-based EDA
+Autoviz: Automatic visualization of any dataset
+
+Other Tools:
+
+R: ggplot2, dplyr for data analysis
+Tableau: Business intelligence and visualization
+Power BI: Microsoft's BI tool
+Excel: Quick exploration (limited for large datasets)
+Jupyter Notebooks: Interactive environment for analysis
+
+My Typical Workflow:
+pythonimport pandas as pd           # Data manipulation
+import numpy as np            # Numerical operations
+import matplotlib.pyplot as plt  # Basic plotting
+import seaborn as sns         # Statistical visualizations
+
+# For quick automated EDA:
+from pandas_profiling import ProfileReport
+For Titanic Project: I used Pandas (data handling), NumPy (calculations), Matplotlib (custom plots), and Seaborn (correlation heatmap, pairplot) - these four cover 90% of EDA needs.
+
+7. Can you explain a time when EDA helped you find a problem?
+Answer:
+Scenario: Titanic Dataset Analysis
+The Situation:
+While analyzing the Titanic dataset for survival prediction, initial model accuracy was poor (~65%). EDA revealed several issues:
+Problem 1: Missing Values
+Discovery: EDA showed:
+
+Age: 20% missing
+Cabin: 77% missing
+Embarked: 0.2% missing
+
+Impact: The model couldn't handle missing Age values properly.
+Solution:
+
+Filled Age with median age grouped by Pclass and Sex (children vs adults)
+Dropped Cabin (too many missing values, low utility)
+Filled Embarked mode (only 2 missing)
+
+Result: Model accuracy improved to 72%
+Problem 2: Outliers in Fare
+Discovery: Boxplot revealed extreme outliers (max fare: $512 vs median: $14)
+Impact: These outliers skewed the model, giving undue importance to Fare feature.
+Solution:
+
+Applied log transformation: log(Fare + 1)
+Capped outliers at 95th percentile
+
+Result: Model became more stable and generalizable
+Problem 3: Hidden Feature
+Discovery: Analyzing SibSp and Parch separately wasn't effective, but combining them revealed a pattern:
+
+Solo travelers: Lower survival
+Small families (2-4): Higher survival
+Large families (5+): Lower survival (stayed together, couldn't all fit in lifeboats)
+
+Solution: Created new feature: FamilySize = SibSp + Parch + 1
+Result: Feature importance increased, model accuracy reached 79%
+Key Lesson:
+"EDA isn't just about understanding data; it's about uncovering hidden issues that will break your model later." Without proper EDA, I would have spent hours debugging model problems that were actually data quality issues.
+
+8. What is the role of visualization in ML?
+Answer:
+Visualization plays a critical role throughout the entire ML pipeline, not just during EDA:
+1. During EDA (Exploration):
+
+Understand distributions: Histograms show if data is normal, skewed, or bimodal
+Detect outliers: Boxplots reveal anomalies quickly
+Find patterns: Scatter plots show relationships between features
+Check correlations: Heatmaps identify multicollinearity
+
+2. During Feature Engineering:
+
+Test transformations: Compare before/after distributions
+Validate new features: Ensure they add value
+Identify interactions: Pair plots reveal feature combinations
+
+3. During Model Building:
+
+Compare models: Bar charts of accuracy metrics
+Hyperparameter tuning: Line plots of parameter vs performance
+Learning curves: Plot training/validation loss over epochs
+Feature importance: Bar charts showing most impactful features
+
+4. During Model Evaluation:
+
+Confusion Matrix: Heatmap of prediction vs actual
+ROC Curve: Visualize true/false positive rates
+Precision-Recall Curve: For imbalanced datasets
+Residual Plots: Check model assumptions
+Error Analysis: Visualize where model fails
+
+5. During Deployment/Monitoring:
+
+Dashboards: Monitor model performance in production
+Data drift: Track feature distributions over time
+Prediction distributions: Ensure outputs remain stable
+
+Key Benefits:
+✅ Speed: Spot issues in seconds vs hours of statistical analysis
+✅ Communication: Explain insights to non-technical stakeholders
+✅ Intuition: Build mental models of data behavior
+✅ Debugging: Quickly identify where things go wrong
+✅ Storytelling: Present findings compellingly
+Best Practices:
+
+Choose the right chart for the message
+Keep it simple - avoid chart junk
+Use color purposefully - not just decoration
+Add context - titles, labels, legends
+Consider your audience - technical vs business
+
+Example from Titanic:
+The survival rate bar chart by gender immediately showed women had 74% survival vs men at 19%. This single visualization made it obvious that gender was the most important feature - something that would take multiple statistical tests to confirm otherwise.
